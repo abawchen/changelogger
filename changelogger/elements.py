@@ -1,6 +1,6 @@
 import re
 
-from re import match
+from itertools import ifilter
 
 
 class Repo(object):
@@ -17,27 +17,32 @@ class Repo(object):
                 self._url = self._url.replace(':', '/').replace('git@', 'https://')
             if self._url.endswith('.git'):
                 self._url = re.sub('\.git', '', self._url)
+
         return self._url
 
 
 class Commit(object):
 
-    def __init__(self, commit, repo_url=None, patterns=[]):
+    def __init__(self, commit, repo_url=None, patterns={}):
         self.commit = commit
         self.repo_url = repo_url
         self.first_line_message = commit.message.splitlines()[0].strip()
         self.category = ''
         self.note = ''
         self.brief = self.first_line_message
-
-        next((self.parse(pattern) for pattern in patterns if self.category != ''), None)
+        next(ifilter(None, (self.parse(kv) for kv in patterns.items())), None)
 
     @property
     def url(self):
         return '/'.join([self.repo_url, 'commit', self._commit.hexsha])
 
-    def parse(self, pattern):
-        self.meta = match(pattern, self.first_line_message)
-        self.category = self.meta[0]
-        self.note = self.meta[1] if len(self.meta) > 2 else ''
-        self.brief = self.meta[-1]
+    def parse(self, kv):
+        matches = re.search(kv[1], self.brief)
+        if matches:
+            self.meta = matches.groups()
+            self.category = kv[0]
+            self.note = self.meta[2] or ''
+            self.brief = self.meta[-1].strip()
+            return True
+
+        return False
