@@ -1,3 +1,5 @@
 *.pyc
+*.swo
 *.swp
+.coverage
 .pytest_cache/
