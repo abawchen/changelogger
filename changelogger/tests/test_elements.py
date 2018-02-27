@@ -32,9 +32,7 @@ def test_repo_url(mock_repo, mock_urls):
 
 
 def test_repo_git_url(mock_repo, mock_urls):
-    # urls_mock = Mock()
     mock_repo.remote = mock_urls(['git@mockhub.com:namespace/mock.git'])
-    # mock_repo.remote = Mock(return_value = urls_mock)
     repo = Repo(mock_repo)
     assert repo.url == 'https://mockhub.com/namespace/mock'
 

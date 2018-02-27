@@ -3,7 +3,6 @@ import re
 from re import match
 
 
-
 class Repo(object):
 
     def __init__(self, repo, url=None):
@@ -20,17 +19,25 @@ class Repo(object):
                 self._url = re.sub('\.git', '', self._url)
         return self._url
 
+
 class Commit(object):
 
-    def __init__(self, commit, repo_url, pattern=None):
+    def __init__(self, commit, repo_url=None, patterns=[]):
         self.commit = commit
         self.repo_url = repo_url
         self.first_line_message = commit.message.splitlines()[0].strip()
+        self.category = ''
+        self.note = ''
+        self.brief = self.first_line_message
 
-        if pattern is not None:
-            self.meta = match(pattern, self.first_line_message)
+        next((self.parse(pattern) for pattern in patterns if self.category != ''), None)
 
     @property
     def url(self):
-        return '/'.join([self, repo_url, 'commit', self._commit.hexsha])
+        return '/'.join([self.repo_url, 'commit', self._commit.hexsha])
 
+    def parse(self, pattern):
+        self.meta = match(pattern, self.first_line_message)
+        self.category = self.meta[0]
+        self.note = self.meta[1] if len(self.meta) > 2 else ''
+        self.brief = self.meta[-1]
