@@ -28,7 +28,7 @@ class Commit(object):
         self.repo_url = repo_url
         self.first_line_message = commit.message.splitlines()[0].strip()
         self.category = ''
-        self.note = ''
+        self.scope = ''
         self.brief = self.first_line_message
         next(ifilter(None, (self.parse(kv) for kv in patterns.items())), None)
 

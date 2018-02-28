@@ -96,3 +96,13 @@ def test_commit_message_docs_pattern(mock_commit, config):
     assert commit.category == 'Docs'
     assert commit.scope == 'api'
     assert commit.brief == 'Add login api section.'
+
+
+def test_commit_message_no_matched_pattern(mock_commit, config):
+    mock_commit.message = '\n'.join([
+        'minor: This commit message would not be categorized.'
+    ])
+    commit = Commit(commit=mock_commit, patterns=config['patterns'])
+    assert commit.category == ''
+    assert commit.scope == ''
+    assert commit.brief == 'minor: This commit message would not be categorized.'
