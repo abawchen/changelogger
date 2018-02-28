@@ -1,6 +1,10 @@
 import re
 
-from itertools import ifilter
+# https://stackoverflow.com/a/33715649/9041712
+try:
+    from future_builtins import filter
+except ImportError:
+    pass
 
 
 class Repo(object):
@@ -12,7 +16,7 @@ class Repo(object):
     @property
     def url(self):
         if self._url is None:
-            self._url = self._repo.remote().urls.next()
+            self._url = next(self._repo.remote().urls)
             if not self._url.startswith('http'):
                 self._url = self._url.replace(':', '/').replace('git@', 'https://')
             if self._url.endswith('.git'):
@@ -30,7 +34,7 @@ class Commit(object):
         self.category = ''
         self.scope = ''
         self.brief = self.first_line_message
-        next(ifilter(None, (self.parse(kv) for kv in patterns.items())), None)
+        next(filter(None, (self.parse(kv) for kv in patterns.items())), None)
 
     @property
     def url(self):

@@ -111,7 +111,7 @@ def test_commit_message_no_matched_pattern(mock_commit, config):
 
 
 def test_commit_url(mock_commit):
-    random_hex = base64.b64encode(os.urandom(16))
+    random_hex = str(base64.b64encode(os.urandom(16)))
     mock_commit.hexsha = random_hex
     mock_commit.message = 'First commit'
     commit = Commit(commit=mock_commit, repo_url='https://mock.com')
