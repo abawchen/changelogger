@@ -32,8 +32,9 @@ def mock_commit():
 def config():
     return {
         'patterns': {
+            'Chore': '(chore):(.*)',
             'Feature': '(feat)(\((.*[^\)])\))?:(.*)',
-            'chore': '(chore):(.*)'
+            'Fix': '(fix)(\((.*[^\)])\))?:(.*)'
         }
     }
 
@@ -72,5 +73,15 @@ def test_commit_message_feat_pattern(mock_commit, config):
     ])
     commit = Commit(commit=mock_commit, patterns=config['patterns'])
     assert commit.category == 'Feature'
-    assert commit.note == ''
+    assert commit.scope == ''
     assert commit.brief == 'This is my second feature.'
+
+
+def test_commit_message_fix_pattern(mock_commit, config):
+    mock_commit.message = '\n'.join([
+        'fix: Remove duplicate url suffix.'
+    ])
+    commit = Commit(commit=mock_commit, patterns=config['patterns'])
+    assert commit.category == 'Fix'
+    assert commit.scope == ''
+    assert commit.brief == 'Remove duplicate url suffix.'

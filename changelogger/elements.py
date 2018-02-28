@@ -41,7 +41,7 @@ class Commit(object):
         if matches:
             self.meta = matches.groups()
             self.category = kv[0]
-            self.note = self.meta[2] or ''
+            self.scope = self.meta[2] or ''
             self.brief = self.meta[-1].strip()
             return True
 
