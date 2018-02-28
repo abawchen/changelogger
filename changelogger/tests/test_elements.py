@@ -34,7 +34,8 @@ def config():
         'patterns': {
             'Chore': '(chore):(.*)',
             'Feature': '(feat)(\((.*[^\)])\))?:(.*)',
-            'Fix': '(fix)(\((.*[^\)])\))?:(.*)'
+            'Fix': '(fix)(\((.*[^\)])\))?:(.*)',
+            'Docs': '(docs)(\((.*[^\)])\))?:(.*)',
         }
     }
 
@@ -85,3 +86,13 @@ def test_commit_message_fix_pattern(mock_commit, config):
     assert commit.category == 'Fix'
     assert commit.scope == ''
     assert commit.brief == 'Remove duplicate url suffix.'
+
+
+def test_commit_message_docs_pattern(mock_commit, config):
+    mock_commit.message = '\n'.join([
+        'docs(api): Add login api section.'
+    ])
+    commit = Commit(commit=mock_commit, patterns=config['patterns'])
+    assert commit.category == 'Docs'
+    assert commit.scope == 'api'
+    assert commit.brief == 'Add login api section.'
