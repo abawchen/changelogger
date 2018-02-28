@@ -34,7 +34,7 @@ class Commit(object):
 
     @property
     def url(self):
-        return '/'.join([self.repo_url, 'commit', self._commit.hexsha])
+        return '/'.join([self.repo_url, 'commit', self.commit.hexsha])
 
     def parse(self, kv):
         matches = re.search(kv[1], self.brief)

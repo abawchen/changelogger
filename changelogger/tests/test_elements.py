@@ -1,3 +1,5 @@
+import base64
+import os
 import pytest
 
 from mock import MagicMock as Mock
@@ -106,3 +108,11 @@ def test_commit_message_no_matched_pattern(mock_commit, config):
     assert commit.category == ''
     assert commit.scope == ''
     assert commit.brief == 'minor: This commit message would not be categorized.'
+
+
+def test_commit_url(mock_commit):
+    random_hex = base64.b64encode(os.urandom(16))
+    mock_commit.hexsha = random_hex
+    mock_commit.message = 'First commit'
+    commit = Commit(commit=mock_commit, repo_url='https://mock.com')
+    assert commit.url == 'https://mock.com/commit/{}'.format(random_hex)
