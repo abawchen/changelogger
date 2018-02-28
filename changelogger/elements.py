@@ -28,20 +28,20 @@ class Commit(object):
         self.repo_url = repo_url
         self.first_line_message = commit.message.splitlines()[0].strip()
         self.category = ''
-        self.note = ''
+        self.scope = ''
         self.brief = self.first_line_message
         next(ifilter(None, (self.parse(kv) for kv in patterns.items())), None)
 
     @property
     def url(self):
-        return '/'.join([self.repo_url, 'commit', self._commit.hexsha])
+        return '/'.join([self.repo_url, 'commit', self.commit.hexsha])
 
     def parse(self, kv):
         matches = re.search(kv[1], self.brief)
         if matches:
             self.meta = matches.groups()
             self.category = kv[0]
-            self.note = self.meta[2] or ''
+            self.scope = self.meta[2] or ''
             self.brief = self.meta[-1].strip()
             return True
 

@@ -1,3 +1,5 @@
+import base64
+import os
 import pytest
 
 from mock import MagicMock as Mock
@@ -32,8 +34,10 @@ def mock_commit():
 def config():
     return {
         'patterns': {
+            'Chore': '(chore):(.*)',
             'Feature': '(feat)(\((.*[^\)])\))?:(.*)',
-            'chore': '(chore):(.*)'
+            'Fix': '(fix)(\((.*[^\)])\))?:(.*)',
+            'Docs': '(docs)(\((.*[^\)])\))?:(.*)',
         }
     }
 
@@ -72,5 +76,43 @@ def test_commit_message_feat_pattern(mock_commit, config):
     ])
     commit = Commit(commit=mock_commit, patterns=config['patterns'])
     assert commit.category == 'Feature'
-    assert commit.note == ''
+    assert commit.scope == ''
     assert commit.brief == 'This is my second feature.'
+
+
+def test_commit_message_fix_pattern(mock_commit, config):
+    mock_commit.message = '\n'.join([
+        'fix: Remove duplicate url suffix.'
+    ])
+    commit = Commit(commit=mock_commit, patterns=config['patterns'])
+    assert commit.category == 'Fix'
+    assert commit.scope == ''
+    assert commit.brief == 'Remove duplicate url suffix.'
+
+
+def test_commit_message_docs_pattern(mock_commit, config):
+    mock_commit.message = '\n'.join([
+        'docs(api): Add login api section.'
+    ])
+    commit = Commit(commit=mock_commit, patterns=config['patterns'])
+    assert commit.category == 'Docs'
+    assert commit.scope == 'api'
+    assert commit.brief == 'Add login api section.'
+
+
+def test_commit_message_no_matched_pattern(mock_commit, config):
+    mock_commit.message = '\n'.join([
+        'minor: This commit message would not be categorized.'
+    ])
+    commit = Commit(commit=mock_commit, patterns=config['patterns'])
+    assert commit.category == ''
+    assert commit.scope == ''
+    assert commit.brief == 'minor: This commit message would not be categorized.'
+
+
+def test_commit_url(mock_commit):
+    random_hex = base64.b64encode(os.urandom(16))
+    mock_commit.hexsha = random_hex
+    mock_commit.message = 'First commit'
+    commit = Commit(commit=mock_commit, repo_url='https://mock.com')
+    assert commit.url == 'https://mock.com/commit/{}'.format(random_hex)
