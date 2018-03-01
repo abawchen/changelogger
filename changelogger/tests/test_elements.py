@@ -4,12 +4,13 @@ import pytest
 
 from mock import MagicMock as Mock
 
+from .fixtures import setup_repo
 from ..elements import Commit, Repo
 
 
 @pytest.fixture
 def mock_repo():
-    repo = Mock()
+    repo = setup_repo()
     return repo
 
 

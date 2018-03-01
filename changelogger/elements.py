@@ -24,11 +24,14 @@ class Repo(object):
 
         return self._url
 
+    def iter_commits(self, rev=None, paths='', **kwargs):
+        return self._repo.iter_commits(rev, paths, **kwargs)
+
 
 class Commit(object):
 
     def __init__(self, commit, repo_url=None, patterns={}):
-        self.commit = commit
+        self._commit = commit
         self.repo_url = repo_url
         self.first_line_message = commit.message.splitlines()[0].strip()
         self.category = ''
@@ -38,7 +41,7 @@ class Commit(object):
 
     @property
     def url(self):
-        return '/'.join([self.repo_url, 'commit', self.commit.hexsha])
+        return '/'.join([self.repo_url, 'commit', self._commit.hexsha])
 
     def parse(self, kv):
         matches = re.search(kv[1], self.brief)

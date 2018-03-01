@@ -3,3 +3,4 @@
 *.swp
 .coverage
 .pytest_cache/
+changelogger/tests/bare-repo/
