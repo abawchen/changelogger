@@ -15,6 +15,11 @@ def setup_repo():
     filename = osp.join(repo_dir, 'README.md')
     open(filename, 'wb').close()
     repo.index.add([filename])
-    repo.index.commit("initial commit")
+    repo.index.commit('initial commit')
+
+    with open(filename, 'a') as f:
+        f.write('Update README\n')
+    repo.index.add([filename])
+    repo.index.commit('docs(README): The lastest commit')
 
     return repo

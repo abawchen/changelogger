@@ -55,6 +55,13 @@ def test_repo_git_url(mock_repo, mock_urls):
     assert repo.url == 'https://mockhub.com/namespace/mock'
 
 
+def test_repo_iter_commits(mock_repo):
+    repo = Repo(mock_repo)
+    commits = repo.iter_commits()
+    commit = next(commits)
+    assert commit.message == 'docs(README): The lastest commit'
+
+
 def test_commit_message_only(mock_commit):
     mock_commit.message = '\n'.join([
         'feat: This is my first feature.',
