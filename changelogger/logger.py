@@ -7,6 +7,25 @@ class Logger(object):
         self.repo = repo
         self.patterns = patterns
         self.commits = []
+        self.tags = []
+
+    def fetch_tags(self, start=None, end=None):
+        # TODO: Refactor
+        tags = self.repo.tags
+        start = start or tags[0]
+        end = end or tags[-1]
+        found = False
+        for tag in tags:
+            if tag.name == start:
+                found = True
+                self.tags.append(tag)
+                if start == end:
+                    break
+            elif found and tag.name != end:
+                self.tags.append(tag)
+            elif tag.name == end:
+                self.tags.append(tag)
+                break
 
     def traverse(self, rev=None, paths='', **kwargs):
         commits = self.repo.iter_commits(rev, paths, **kwargs)

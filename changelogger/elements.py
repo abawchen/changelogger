@@ -14,6 +14,10 @@ class Repo(object):
         self._url = url
 
     @property
+    def tags(self):
+        return self._repo.tags
+
+    @property
     def url(self):
         if self._url is None:
             self._url = next(self._repo.remote().urls)
@@ -48,7 +52,7 @@ class Commit(object):
         if matches:
             self.meta = matches.groups()
             self.category = kv[0]
-            self.scope = self.meta[2] or ''
+            self.scope = self.meta[2] or '' if len(self.meta) > 2 else ''
             self.brief = self.meta[-1].strip()
             return True
 

@@ -4,7 +4,7 @@ import pytest
 
 from mock import MagicMock as Mock
 
-from .fixtures import setup_repo
+from .fixtures import config, setup_repo
 from ..elements import Commit, Repo
 
 
@@ -31,18 +31,6 @@ def mock_commit():
     return commit
 
 
-@pytest.fixture
-def config():
-    return {
-        'patterns': {
-            'Chore': '(chore):(.*)',
-            'Feature': '(feat)(\((.*[^\)])\))?:(.*)',
-            'Fix': '(fix)(\((.*[^\)])\))?:(.*)',
-            'Docs': '(docs)(\((.*[^\)])\))?:(.*)',
-        }
-    }
-
-
 def test_repo_url(mock_repo, mock_urls):
     mock_repo.remote = mock_urls(['https://mockhub.com/namespace/mock.git'])
     repo = Repo(mock_repo)
@@ -59,7 +47,7 @@ def test_repo_iter_commits(mock_repo):
     repo = Repo(mock_repo)
     commits = repo.iter_commits()
     commit = next(commits)
-    assert commit.message == 'docs(README): The lastest commit'
+    assert commit.message == 'docs(README): The latest commit'
 
 
 def test_commit_message_only(mock_commit):
