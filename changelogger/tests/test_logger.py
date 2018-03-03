@@ -16,7 +16,31 @@ def repo():
     return repo
 
 
-def test_logger(repo, config):
+def test_logger_fetch_tags(repo):
+    logger = Logger(repo=repo)
+    logger.fetch_tags()
+    expected = ['v0.0.1', 'v0.0.2', 'v1.0.0']
+    for tag, name in zip(logger.tags, expected):
+        assert tag.name == name
+
+
+def test_logger_fetch_tags_with_start(repo):
+    logger = Logger(repo=repo)
+    logger.fetch_tags(start='v0.0.2')
+    expected = ['v0.0.2', 'v1.0.0']
+    for tag, name in zip(logger.tags, expected):
+        assert tag.name == name
+
+
+def test_logger_fetch_tags_with_end(repo):
+    logger = Logger(repo=repo)
+    logger.fetch_tags(end='v0.0.2')
+    expected = ['v0.0.1', 'v0.0.2']
+    for tag, name in zip(logger.tags, expected):
+        assert tag.name == name
+
+
+def test_logger_traverse(repo, config):
     logger = Logger(repo=repo, patterns=config['patterns'])
     logger.traverse()
 

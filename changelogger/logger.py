@@ -12,8 +12,8 @@ class Logger(object):
     def fetch_tags(self, start=None, end=None):
         # TODO: Refactor
         tags = self.repo.tags
-        start = start or tags[0]
-        end = end or tags[-1]
+        start = start or tags[0].name
+        end = end or tags[-1].name
         found = False
         for tag in tags:
             if tag.name == start:
